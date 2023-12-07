@@ -9,7 +9,7 @@ from regression_class import input_features
 
 st.title("Red neuronal - prediccion de lluvia")
 
-pipe = joblib.load(r"C:\Users\facuf\Downloads\TP-AA1\MLOPS\regression_pipeline.joblib")
+pipe = joblib.load("regression_pipeline.joblib")
 
 
 min_temp = st.slider('MinTemp', 0, 40, 15)
