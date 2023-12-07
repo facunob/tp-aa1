@@ -9,7 +9,7 @@ from regression_class import input_features
 
 st.title("Red neuronal - clasificacion")
 
-pipe = joblib.load(r"C:\Users\facuf\Downloads\TP-AA1\MLOPS\classification_pipeline.joblib")
+pipe = joblib.load("classification_pipeline.joblib")
 
 
 min_temp = st.slider('MinTemp', 0, 40, 15)
