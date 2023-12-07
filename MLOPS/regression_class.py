@@ -1,5 +1,14 @@
-
 import pandas as pd
+
+input_features = [
+  'MinTemp', 'MaxTemp', 'Rainfall',  'WindGustSpeed', 'WindSpeed3pm',
+  'Humidity3pm', 'Pressure9am', 'Pressure3pm', 'Cloud3pm',
+  'WindGustDir_E', 'WindGustDir_N', 'WindGustDir_S', 'WindGustDir_W',
+  'RainToday_No', 'RainToday_Yes',
+]
+
+df_features = input_features.copy()
+df_features.extend([ 'RainfallTomorrow', 'RainTomorrow_Yes'])
 
 ubicaciones = ['Sydney', 'SydneyAirport', 'Canberra', 'Melbourne', 'MelbourneAirport']
 
@@ -18,18 +27,25 @@ def get_wind(wind_dir):
 
 
 def feat_eng(df):
-  df = df[df['Location'].isin(ubicaciones)]
-  df.drop(['Location'], axis=1, inplace=True)
+  if 'Location' in df.columns:
+    df = df[df['Location'].isin(ubicaciones)]
+    df.drop(['Location'], axis=1, inplace=True)
 
   df = df[df['RainToday'].notna()]
-  df = df[df['RainTomorrow'].notna()]
-  df = df[df['RainfallTomorrow'].notna()]
+
+  if 'RainTomorrow' in df.columns:
+    df = df[df['RainTomorrow'].notna()]
+  
+  if 'RainfallTomorrow' in df.columns:
+    df = df[df['RainfallTomorrow'].notna()]
 
   df = df[df['WindGustDir'].notna()]
   df = df[df['WindDir3pm'].notna()]
   df = df[df['WindDir9am'].notna()]
 
-  df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d")
+  if 'Date' in df.columns:
+    df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d")
+
   df["Season"] = df["Date"].apply(get_season)
 
   df["WindGustDir"] = df["WindGustDir"].apply(get_wind)
@@ -38,12 +54,7 @@ def feat_eng(df):
 
   df = pd.get_dummies(df)
 
-  return df[[
-              'MinTemp', 'MaxTemp', 'Rainfall',  'WindGustSpeed', 'WindSpeed3pm',
-              'Humidity3pm', 'Pressure9am', 'Pressure3pm', 'Cloud3pm',
-              'WindGustDir_E', 'WindGustDir_N', 'WindGustDir_S', 'WindGustDir_W',
-              'RainToday_No', 'RainToday_Yes',
-            ]]
+  return df[df_features]
 
 
 
@@ -74,6 +85,8 @@ class NeuralNetworkRegressor(BaseEstimator, RegressorMixin):
         
         for units, act in zip(self.hidden_units[1:], self.activation[1:]):
             model.add(Dense(units, activation=act))
+
+        model.add(Dense(1, activation='linear'))
 
         model.compile(optimizer=self.optimizer, loss=self.loss, metrics=['mse'])
         return model

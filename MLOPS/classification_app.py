@@ -2,14 +2,14 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
-from regression_class import NeuralNetworkRegressor
+from classification_class import NeuralNetworkClassifier
 from regression_class import input_features
-# python -m streamlit run regression_app.py
+# python -m streamlit run classification_app.py
 
 
-st.title("Red neuronal - prediccion de lluvia")
+st.title("Red neuronal - clasificacion")
 
-pipe = joblib.load(r"C:\Users\facuf\Downloads\TP-AA1\MLOPS\regression_pipeline.joblib")
+pipe = joblib.load(r"C:\Users\facuf\Downloads\TP-AA1\MLOPS\classification_pipeline.joblib")
 
 
 min_temp = st.slider('MinTemp', 0, 40, 15)
@@ -38,4 +38,4 @@ data_to_predict = np.array([[
 ]])
 
 prediction = pipe.predict(data_to_predict)
-st.write(prediction)
+st.write("Lloverá" if prediction >= 0.5 else "No lloverá")
