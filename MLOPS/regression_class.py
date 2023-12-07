@@ -66,7 +66,7 @@ from tensorflow.keras import backend as K
 from sklearn.base import BaseEstimator, RegressorMixin
 
 class NeuralNetworkRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, hidden_units=(15, 18, 9), dropout_rate=0.063, activation=('relu', 'leaky_relu', 'leaky_relu'), optimizer='adam', loss='mean_squared_error', epochs=300, batch_size=35, validation_split=0.1):
+    def __init__(self, hidden_units=(15, 18, 9), dropout_rate=0.063, activation=('relu', 'leaky_relu', 'leaky_relu'), optimizer='adam', loss='mean_squared_error', epochs=300, batch_size=400, validation_split=0.1):
         self.input_dim = 15
         self.hidden_units = hidden_units
         self.dropout_rate = dropout_rate
